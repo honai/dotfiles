@@ -29,6 +29,7 @@ prompt_honai_precmd () {
         fi
         vcs=" %F{8}${vcs_info_msg_0_}%f$dirty"
     fi
+
     local k8s_ctx
     local k8s
     if [[ $is_kubectl_found = "1" ]]; then
@@ -36,8 +37,13 @@ prompt_honai_precmd () {
         k8s=" %F{8}⎈${k8s_ctx}%f"
     fi
 
+    local dot_info
+    if [[ $PWD = $HOME ]] && [[ -n "$(dit status --short 2> /dev/null)" ]]; then
+        dot_info=" %F{red}*%f"
+    fi
+
     PROMPT="
-%~${vcs}${k8s}%(0?.. [%?])
+%~${dot_info}${vcs}${k8s}%(0?.. [%?])
 %F{%(0?.blue.red)}${prompt_char}%f "
 
     RPROMPT="%w %*"
