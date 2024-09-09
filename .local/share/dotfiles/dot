@@ -1,0 +1,155 @@
+#!/bin/sh
+set -u -e -o pipefail
+
+if [[ -n "${DEBUG-}" ]]; then
+    set -x
+fi
+
+XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+
+DOT_DATA_DIR="$XDG_DATA_HOME/dotfiles"
+DOT_CACHE_DIR="$XDG_CACHE_HOME/dotfiles"
+
+readonly DEFAULT_REPO_NAME="dotfiles"
+
+mkdir -p "$DOT_DATA_DIR" "$DOT_CACHE_DIR"
+
+printerr() {
+    echo "$1" 1>&2
+}
+
+# /foo/dotfiles.bar.git -> bar
+to_repo_name() {
+    local basename="${1##*/}"
+    if [[ "$basename" = "dotfiles.git" || "$basename" = "$DEFAULT_REPO_NAME.git" ]]; then
+        echo "$DEFAULT_REPO_NAME"
+        return
+    fi
+    local name="${basename%.git}"
+    if [[ -z "$name" || "$name" = "$DEFAULT_REPO_NAME" ]]; then
+        printerr "Invalid repo name: $1"
+        exit 1
+    fi
+    echo "$name"
+}
+
+# repo path
+add_subrepo_ignore() {
+    local repo_name="$(to_repo_name $1)"
+    cat <<EOF >> "$1/info/exclude"
+*
+!*/
+!*.$repo_name.*
+EOF
+}
+
+# $1: git dir
+git_config_checkout() {
+    local repo_name="$(to_repo_name $1)"
+    export GIT_DIR="$1"
+    git config core.bare false
+    git config core.worktree "$HOME"
+    git config status.showUntrackedFiles no
+
+    # checkout
+    git reset -- . > /dev/null
+    git ls-files --deleted | while IFS= read -r file; do
+        git checkout -- ":/$file"
+    done
+    if [[ -n "$(git ls-files --modified)" ]]; then
+        printerr \
+          "Some local files differ from ones in the repo: run \`dit status\`."
+    fi
+    unset GIT_DIR
+}
+
+add_dot_to_bin() {
+    local user_bin="$HOME/.local/bin"
+    ls "$DOT_DATA_DIR/dot" > /dev/null
+    mkdir -p "$user_bin"
+    ln -svw "$DOT_DATA_DIR/dot" "$user_bin/dot"
+}
+
+# $1: repo url
+clone() {
+    local repo_url="$1"
+    local repo_name="$(to_repo_name $repo_url)"
+    local repo_path="$DOT_DATA_DIR/$repo_name.git"
+    if [[ ! -d "$repo_path" ]]; then
+        local clone_tmp_dir="$DOT_CACHE_DIR/$repo_name.tmp"
+        git clone --no-checkout --separate-git-dir="$repo_path" \
+            "$repo_url" \
+            "$clone_tmp_dir"
+        rm -rf $clone_tmp_dir
+        if [[ "$repo_name" != "$DEFAULT_REPO_NAME" ]]; then
+            add_subrepo_ignore "$repo_path"
+        fi
+    fi
+    git_config_checkout "$repo_path"
+    if [[ "$repo_name" = "$DEFAULT_REPO_NAME" ]]; then
+        add_dot_to_bin
+    fi
+}
+
+# $1: name of subrepo
+init() {
+    if [[ "$#" = "0" ]]; then
+        local repo_path="$DOT_DATA_DIR/${DEFAULT_REPO_NAME}.git"
+        local default="1"
+        printerr "Initializing default repo"
+    elif [[ -z "$1" || "$1" = "$DEFAULT_REPO_NAME" ]]; then
+        printerr "Invalid subrepo name: $1"
+        return 1
+    else
+        local repo_path="$DOT_DATA_DIR/$1.git"
+        local default="0"
+        printerr "Initializing sub repo $1"
+    fi
+    if [[ ! -d "$repo_path" ]]; then
+        git init --bare "$repo_path"
+        if [[ "$default" = "0" ]]; then
+            add_subrepo_ignore "$repo_path"
+        fi
+    fi
+    git_config_checkout "$repo_path"
+}
+
+if [[ "$#" = "0" ]]; then
+    printerr "No subcommand."
+    exit 1
+fi
+
+case $1 in
+    "init")
+        shift
+        init "$@"
+        exit
+    ;;
+    "clone")
+        shift
+        clone "$@"
+        exit
+    ;;
+    *)
+        set +e
+        getopts r: OPT
+        set -e
+        repo_name="${OPTARG-$DEFAULT_REPO_NAME}.git"
+        repo_path="$DOT_DATA_DIR/$repo_name"
+        if [[ "$OPT" != "?" ]]; then
+            shift $(($OPTIND - 1))
+            printerr "Using $repo_name"
+        fi
+        if [[ $1 = "add" ]]; then
+            # prevent adding all untracked files (= ALL files in $HOME)
+            case ${2-} in
+                "."|"-A"|"--all")
+                    printerr 'Do not add untracked files!'
+                    exit 1
+                ;;
+            esac
+        fi
+        git --git-dir="$repo_path" "$@"
+    ;;
+esac
