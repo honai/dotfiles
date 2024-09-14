@@ -1,5 +1,5 @@
 # honai/dotfiles
 
 ```
-URL=https://github.com/honai/dotfiles; curl -sfL "$URL/raw/main/.local/share/dotfiles/dot" | sh -s clone $URL
+URL=https://github.com/honai/dotfiles; curl -sfL "$URL/raw/main/.local/share/dotfiles/dot" | bash -s clone $URL.git
 ```
