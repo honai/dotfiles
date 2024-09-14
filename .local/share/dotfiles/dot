@@ -51,6 +51,8 @@ git_config_checkout() {
 	git config core.bare false
 	git config core.worktree "$HOME"
 	git config status.showUntrackedFiles no
+	# do not checkout .github
+	git sparse-checkout set --no-cone '/*' '!.github'
 
 	# checkout
 	git reset -- . >/dev/null
