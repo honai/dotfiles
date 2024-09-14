@@ -1,4 +1,7 @@
-on: [push]
+on:
+  push:
+    paths-ignore:
+      - '.github/README.md'
 
 env:
   DOT_DATA_DIR: .local/share/dotfiles
