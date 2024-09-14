@@ -38,12 +38,17 @@ prompt_honai_precmd () {
     fi
 
     local dot_info
-    if [[ $PWD = $HOME ]] && [[ -n "$(dit status --short 2> /dev/null)" ]]; then
+    if [[ $PWD = $HOME && -n "$(dot status --short 2> /dev/null)" ]]; then
         dot_info=" %F{red}*%f"
     fi
 
+    local remote_info=''
+    if [[ -n "$SSH_CONNECTION" ]]; then
+        remote_info='%n@%M '
+    fi
+
     PROMPT="
-%~${dot_info}${vcs}${k8s}%(0?.. [%?])
+${remote_info}%~${dot_info}${vcs}${k8s}%(0?.. [%?])
 %F{%(0?.blue.red)}${prompt_char}%f "
 
     RPROMPT="%w %*"
