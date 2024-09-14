@@ -70,7 +70,7 @@ add_dot_to_bin() {
 	local -r user_bin="$HOME/.local/bin"
 	ls "$DOT_DATA_DIR/dot" >/dev/null
 	mkdir -p "$user_bin"
-	ln -svw "$DOT_DATA_DIR/dot" "$user_bin/dot"
+	ln -sv "$DOT_DATA_DIR/dot" "$user_bin/dot"
 }
 
 # $1: repo url
@@ -78,9 +78,11 @@ clone() {
 	local -r repo_url="$1"
 	local -r repo_name="$(to_repo_name "$repo_url")"
 	local -r repo_path="$DOT_DATA_DIR/$repo_name.git"
+	local -r branch="${BRANCH-main}"
 	if [[ ! -d "$repo_path" ]]; then
 		local -r clone_tmp_dir="$DOT_CACHE_DIR/$repo_name.tmp"
 		git clone --no-checkout --separate-git-dir="$repo_path" \
+			--branch="$branch" \
 			"$repo_url" \
 			"$clone_tmp_dir"
 		rm -rf "$clone_tmp_dir"
