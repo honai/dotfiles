@@ -41,6 +41,7 @@ add_subrepo_ignore() {
 	cat <<EOF >>"$1/info/exclude"
 *
 !*/
+!*.$repo_name
 !*.$repo_name.*
 EOF
 }
@@ -135,6 +136,13 @@ case $1 in
 	shift
 	clone "$@"
 	exit
+	;;
+"list")
+	shift
+	while read -r repo_path; do
+		echo "${repo_path##*/}"
+		git --git-dir="$repo_path" status --short
+	done < <(find "$DOT_DATA_DIR" -depth 1 -type d -name '*.git')
 	;;
 *)
 	set +e
