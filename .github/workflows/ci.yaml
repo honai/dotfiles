@@ -1,0 +1,27 @@
+on: [push]
+
+env:
+  DOT_DATA_DIR: .local/share/dotfiles
+
+jobs:
+  lint:
+    runs-on: ubuntu-24.04
+    steps:
+      - run: sudo apt install -y shellcheck shfmt
+      - uses: actions/checkout@v4
+      - run: shellcheck $DOT_DATA_DIR/dot
+      - run: shfmt -d $DOT_DATA_DIR/dot
+
+  test:
+    needs: lint
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          pwd
+          echo $HOME
+          ls -a $HOME
+      - run: ./$DOT_DATA_DIR/dot clone https://github.com/honai/dotfiles.git
+      - run: |
+          ls -a $HOME
+          tree -a $HOME/.config
