@@ -15,13 +15,16 @@ jobs:
   test:
     needs: lint
     runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: /home/runner
     steps:
       - uses: actions/checkout@v4
       - run: |
           pwd
           echo $HOME
-          ls -a $HOME
-      - run: DEBUG=1 BRANCH='${{ github.ref_name }}' ./$DOT_DATA_DIR/dot clone https://github.com/honai/dotfiles.git
+      - run: DEBUG=1 BRANCH='${{ github.ref_name }}' "${{ github.workspace }}/$DOT_DATA_DIR/dot" clone https://github.com/honai/dotfiles.git
+      - run: $HOME/$DOT_DATA_DIR/dot status
       - run: |
           ls -a $HOME
           tree -a $HOME/.config
