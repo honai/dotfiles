@@ -3,13 +3,6 @@ export XDG_STATE_HOME="$HOME/.local/state"
 export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_CACHE_HOME="$HOME/.cache"
 
-export DOT_REPO_DIR="$XDG_DATA_HOME/dotfiles/repo.git"
-
-path=(
-	"$HOME/.local/bin"
-	$path
-)
-
 setopt NULL_GLOB
 for file ($ZDOTDIR/.zshenv.*) {
 	source $file
