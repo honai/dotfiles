@@ -15,4 +15,4 @@
 	path = conf.d/github.com
 
 [include]
-	path = cond.d/local
+	path = conf.d/local
