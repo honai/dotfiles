@@ -1,4 +1,4 @@
-export ZDOTDIR="$HOME"/.config/zsh
+ZDOTDIR="$HOME"/.config/zsh
 
 if [[ -f $ZDOTDIR/.zshenv ]]; then
 	source $ZDOTDIR/.zshenv
