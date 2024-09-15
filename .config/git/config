@@ -1,0 +1,18 @@
+[init]
+	templatedir = ~/.config/git/templates
+	defaultBranch = main
+[pull]
+	ff = only
+[push]
+	autoSetupRemote = true
+[user]
+	name = honai
+
+[includeIf "hasconfig:remote.*.url:https://github.com/**"]
+	path = conf.d/github.com
+
+[includeIf "hasconfig:remote.*.url:https://gitlab.com/**"]
+	path = conf.d/github.com
+
+[include]
+	path = cond.d/local

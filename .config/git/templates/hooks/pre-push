@@ -1,0 +1,11 @@
+#!/bin/bash
+
+readonly forbidden_branch='master|main'
+
+while read -r _local_ref _local_sha1 remote_ref _remote_sha1; do
+	readonly remote_branch="${remote_ref##refs/heads/}"
+	if [[ "$remote_branch" =~ $forbidden_branch ]]; then
+		echo "Do not push to $remote_branch branch."
+		exit 1
+	fi
+done
