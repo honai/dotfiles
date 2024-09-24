@@ -49,7 +49,7 @@ prompt_honai_precmd () {
 
     PROMPT="
 ${remote_info}%~${dot_info}${vcs}${k8s}%(0?.. [%?])
-%F{%(0?.blue.red)}${prompt_char}%f "
+%(0?.%F{blue}.%F{red})${prompt_char}%f "
 
     RPROMPT="%w %*"
 }

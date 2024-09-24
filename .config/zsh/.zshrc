@@ -41,7 +41,12 @@ alias rm="rm -i"
 alias cp="cp -i"
 alias mv="mv -i"
 # TODO: Linux / Mac?
-alias ls="ls -G"
+system_type="$(uname -s)"
+if [ "$system_type" = "Darwin" ]; then
+	alias ls="ls -G"
+else
+	alias ls="ls --color=auto"
+fi
 alias ll="ls -lh"
 alias path="echo $PATH | tr : $'\n'"
 
