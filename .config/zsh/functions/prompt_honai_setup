@@ -44,7 +44,7 @@ prompt_honai_precmd () {
 
     local remote_info=''
     if [[ -n "$SSH_CONNECTION" ]]; then
-        remote_info='%n@%M:'
+        remote_info='%M:'
     fi
 
     PROMPT="
