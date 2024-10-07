@@ -11,8 +11,14 @@
 [includeIf "hasconfig:remote.*.url:https://github.com/**"]
 	path = conf.d/github.com
 
-[includeIf "hasconfig:remote.*.url:https://gitlab.com/**"]
+[includeIf "hasconfig:remote.*.url:git@github.com:*:*"]
 	path = conf.d/github.com
+
+[includeIf "hasconfig:remote.*.url:https://gitlab.com/**"]
+	path = conf.d/gitlab.com
+
+[includeIf "hasconfig:remote.*.url:git@gitlab.com:*/*"]
+	path = conf.d/gitlab.com
 
 [include]
 	path = conf.d/local
