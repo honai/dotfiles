@@ -1,0 +1,5 @@
+Include ~/.config/ssh/conf.d/*
+
+# default
+Host *
+	ServerAliveInterval 30
