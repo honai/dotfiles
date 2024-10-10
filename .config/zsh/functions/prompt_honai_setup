@@ -1,57 +1,69 @@
 prompt_honai_setup() {
-    autoload -Uz vcs_info
+	autoload -Uz vcs_info
 
-    zstyle ':vcs_info:*' enable git cvs
-    zstyle ':vcs_info:git:*' formats '%b'
-    zstyle ':vcs_info:git:*' actionformats '%b|%a'
+	zstyle ':vcs_info:*' enable git cvs
+	zstyle ':vcs_info:git:*' formats '%b'
+	zstyle ':vcs_info:git:*' actionformats '%b|%a'
 
-    if type kubectl > /dev/null; then
-        is_kubectl_found="1"
-    else
-        is_kubectl_found="0"
-    fi
+	if type kubectl >/dev/null; then
+		is_kubectl_found="1"
+	else
+		is_kubectl_found="0"
+	fi
+	# icons
+	icon_git_branch='' # nf-dev-git_branch
+	icon_k8s='󱃾' # nf-md-kubernetes
+	icon_python='' # nf-dev-python
 
-    add-zsh-hook precmd prompt_honai_precmd
+	add-zsh-hook precmd prompt_honai_precmd
 }
 
-prompt_honai_precmd () {
-    local prompt_char="❯"
-    local prompt_success="%F{cyan}${prompt_char}%f"
-    local prompt_fail="%F{red}${prompt_char}%f"
+prompt_honai_precmd() {
+	vcs_info
 
-    vcs_info
+	local vcs
+	if [[ -n ${vcs_info_msg_0_} ]]; then
+		local gs="$(git status --short 2>/dev/null)"
+		if [[ -n $gs ]]; then
+			local dirty="%F{magenta}*%f"
+		fi
+		vcs=" %F{8}${icon_git_branch}${vcs_info_msg_0_}%f$dirty"
+	fi
 
-    local vcs
-    if [[ -n ${vcs_info_msg_0_} ]]; then
-        local gs="$(git status --short 2>/dev/null)"
-        if [[ -n $gs ]]; then
-            local dirty="%F{magenta}*%f"
-        fi
-        vcs=" %F{8}${vcs_info_msg_0_}%f$dirty"
-    fi
+	local k8s
+	if [[ $is_kubectl_found = "1" ]]; then
+		local -r k8s_ctx="$(kubectl config current-context)"
+		k8s=" %F{8}${icon_k8s}${k8s_ctx}%f"
+	fi
 
-    local k8s_ctx
-    local k8s
-    if [[ $is_kubectl_found = "1" ]]; then
-        k8s_ctx="$(kubectl config current-context)"
-        k8s=" %F{8}⎈${k8s_ctx}%f"
-    fi
+	local dot_info
+	if [[ $PWD = $HOME && -n "$(dot status --short 2>/dev/null)" ]]; then
+		dot_info=" %F{red}*%f"
+	fi
 
-    local dot_info
-    if [[ $PWD = $HOME && -n "$(dot status --short 2> /dev/null)" ]]; then
-        dot_info=" %F{red}*%f"
-    fi
+	local remote_info=''
+	if [[ -n "$SSH_CONNECTION" ]]; then
+		remote_info='%M:'
+	fi
 
-    local remote_info=''
-    if [[ -n "$SSH_CONNECTION" ]]; then
-        remote_info='%M:'
-    fi
+	local venv=''
+	if [[ -n "$VIRTUAL_ENV" ]]; then
+		# split by '/' into array, zsh only
+		local segs=(${(s:/:)VIRTUAL_ENV})
+		if [[ "${segs[-1]}" =~ ^\.?venv$ ]]; then
+			local venv_name="${segs[-2]}"
+		else
+			local venv_name="${segs[-1]}"
+		fi
+		venv=" %F{8}${icon_python}${venv_name}%f"
+	fi
 
-    PROMPT="
-${remote_info}%~${dot_info}${vcs}${k8s}%(0?.. [%?])
+	local prompt_char="❯"
+	PROMPT="
+${remote_info}%~${dot_info}${venv}${vcs}${k8s}%(0?.. [%?])
 %(0?.%F{blue}.%F{red})${prompt_char}%f "
 
-    RPROMPT="%w %*"
+	RPROMPT="%w %*"
 }
 
 prompt_honai_setup "$@"
