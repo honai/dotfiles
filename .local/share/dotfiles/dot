@@ -142,7 +142,7 @@ case $1 in
 	while read -r repo_path; do
 		echo "${repo_path##*/}"
 		git --git-dir="$repo_path" status --short
-	done < <(find "$DOT_DATA_DIR" -depth 1 -type d -name '*.git')
+	done < <(find "$DOT_DATA_DIR" -maxdepth 1 -type d -name '*.git')
 	;;
 *)
 	set +e

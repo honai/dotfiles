@@ -50,12 +50,13 @@ prompt_honai_precmd() {
 
 	local venv=''
 	if [[ -n "$VIRTUAL_ENV" ]]; then
-		# split by '/' into array, zsh only
-		local segs=(${(s:/:)VIRTUAL_ENV})
-		if [[ "${segs[-1]}" =~ ^\.?venv$ ]]; then
-			local venv_name="${segs[-2]}"
+		local -r last="${VIRTUAL_ENV##*/}"
+		# a/b/c -> b
+		local -r last2="${${VIRTUAL_ENV%/*}##*/}"
+		if [[ "$last" =~ ^\.?venv$ ]]; then
+			local venv_name="$last2"
 		else
-			local venv_name="${segs[-1]}"
+			local venv_name="$last"
 		fi
 		venv="%F{8}${icon_python}${venv_name}%f "
 	fi
