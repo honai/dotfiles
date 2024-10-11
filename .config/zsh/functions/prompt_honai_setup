@@ -4,65 +4,88 @@ prompt_honai_setup() {
 	zstyle ':vcs_info:*' enable git cvs
 	zstyle ':vcs_info:git:*' formats '%b'
 	zstyle ':vcs_info:git:*' actionformats '%b|%a'
+	zstyle ':vcs_info:git+set-message:*' hooks vcs_git_dirty vcs_git_arrow
 
 	if type kubectl >/dev/null; then
 		is_kubectl_found="1"
 	else
 		is_kubectl_found="0"
 	fi
+
+	remote_info=''
+	if [[ -n "$SSH_CONNECTION" ]]; then
+		remote_info='%M:'
+	fi
+
 	# icons
+	icon_git=''        # nf-dev-git
 	icon_git_branch='' # nf-dev-git_branch
-	icon_k8s='󱃾' # nf-md-kubernetes
-	icon_python='' # nf-dev-python
-	icon_yj='%F{9}%f' # nf-dev-yahoo_small
+	icon_k8s='⎈'
+	icon_python='%F{blue}%f' # nf-dev-python
+	icon_yj='%F{9}%f'        # nf-dev-yahoo_small
 	prompt_char="❯"
 
 	add-zsh-hook precmd prompt_honai_precmd
 }
 
++vi-vcs_git_arrow() {
+	local arrows ahead behind
+	# Exit early in case the worktree is on a detached HEAD
+	git rev-parse @'{u}' >/dev/null 2>&1 || return 0
+	local -a ahead_and_behind=(
+		$(git rev-list --left-right --count HEAD...@'{u}' 2>/dev/null)
+	)
+	ahead=${ahead_and_behind[1]}
+	behind=${ahead_and_behind[2]}
+	((ahead > 0)) && arrows+="⇡"
+	((behind > 0)) && arrows+="⇣"
+	hook_com[branch]+=$arrows
+}
+
++vi-vcs_git_dirty() {
+	local -r gs="$(git status --short 2>/dev/null)"
+	if [[ -n $gs ]]; then
+		hook_com[branch]+='*'
+	fi
+}
+
 prompt_honai_precmd() {
 	vcs_info
 
-	local remote_info=''
-	if [[ -n "$SSH_CONNECTION" ]]; then
-		remote_info='%M:'
+	local prompt_infos=()
+
+	# dot indicator
+	if [[ $PWD = "$HOME" && -n "$(dot status --short 2>/dev/null)" ]]; then
+		prompt_infos+=("%F{red}*%f")
 	fi
 
-	local vcs
+	# vcs
 	if [[ -n ${vcs_info_msg_0_} ]]; then
-		local gs="$(git status --short 2>/dev/null)"
-		if [[ -n $gs ]]; then
-			local dirty="%F{magenta}*%f"
-		fi
-		vcs="%F{8}${icon_git_branch}${vcs_info_msg_0_}%f$dirty "
+		prompt_infos+=("%F{8}${vcs_info_msg_0_}%f")
 	fi
 
-	local k8s
-	if [[ $is_kubectl_found = "1" ]]; then
-		local -r k8s_ctx="$(kubectl config current-context)"
-		k8s="%F{8}${icon_k8s}${k8s_ctx}%f "
-	fi
-
-	local dot_info
-	if [[ $PWD = $HOME && -n "$(dot status --short 2>/dev/null)" ]]; then
-		dot_info="%F{red}*%f "
-	fi
-
-	local venv=''
+	# venv
 	if [[ -n "$VIRTUAL_ENV" ]]; then
 		local -r last="${VIRTUAL_ENV##*/}"
 		# a/b/c -> b
-		local -r last2="${${VIRTUAL_ENV%/*}##*/}"
-		if [[ "$last" =~ ^\.?venv$ ]]; then
+		local -r _dir="${VIRTUAL_ENV%/*}"
+		local -r last2="${_dir##*/}"
+		if [[ $last =~ ^[.]?venv$ ]]; then
 			local venv_name="$last2"
 		else
 			local venv_name="$last"
 		fi
-		venv="%F{8}${icon_python}${venv_name}%f "
+		prompt_infos+=("${icon_python}%F{8}${venv_name}%f")
+	fi
+
+	# k8s
+	if [[ $is_kubectl_found = "1" ]]; then
+		local -r k8s_ctx="$(kubectl config current-context)"
+		prompt_infos+=("%F{8}${icon_k8s}${k8s_ctx}%f")
 	fi
 
 	PROMPT="
-${remote_info}%~ ${dot_info}${venv}${vcs}${k8s}%(0?..[%?] )%F{8}%*%f
+${remote_info}%~ ${prompt_infos[*]} %(0?..[%?] )%F{8}%*%f
 %(0?.%F{blue}.%F{red})${prompt_char}%f "
 }
 
