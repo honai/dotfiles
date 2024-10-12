@@ -1,10 +1,13 @@
 prompt_honai_setup() {
+	zmodload zsh/datetime
 	autoload -Uz vcs_info
 
 	zstyle ':vcs_info:*' enable git cvs
+	zstyle ':vcs_info:*' use-simple true
 	zstyle ':vcs_info:git:*' formats '%b'
-	zstyle ':vcs_info:git:*' actionformats '%b|%a'
+	zstyle ':vcs_info:git:*' actionformats '%b%F{yellow}!%a%f'
 	zstyle ':vcs_info:git+set-message:*' hooks vcs_git_dirty vcs_git_arrow
+	zstyle ':vcs_info:cvs:*' formats '%b(%s)'
 
 	if type kubectl >/dev/null; then
 		is_kubectl_found="1"
@@ -14,13 +17,14 @@ prompt_honai_setup() {
 
 	remote_info=''
 	if [[ -n "$SSH_CONNECTION" ]]; then
-		remote_info='%M:'
+		remote_info='%M '
 	fi
 
 	# icons
 	icon_git=''        # nf-dev-git
 	icon_git_branch='' # nf-dev-git_branch
-	icon_k8s='⎈'
+	icon_k8s='󱃾 '       # nf-md-kubernetes
+	#icon_k8s='⎈ '
 	icon_python='%F{blue}%f' # nf-dev-python
 	icon_yj='%F{9}%f'        # nf-dev-yahoo_small
 	prompt_char="❯"
@@ -39,20 +43,30 @@ prompt_honai_setup() {
 	behind=${ahead_and_behind[2]}
 	((ahead > 0)) && arrows+="⇡"
 	((behind > 0)) && arrows+="⇣"
-	hook_com[branch]+=$arrows
+	hook_com[branch]+="%F{white}$arrows%f"
 }
 
 +vi-vcs_git_dirty() {
-	local -r gs="$(git status --short 2>/dev/null)"
-	if [[ -n $gs ]]; then
-		hook_com[branch]+='*'
+	export GIT_OPTIONAL_LOCKS=0
+	local -r status="$(git status --short 2>/dev/null)"
+	if [[ -n $status ]]; then
+		hook_com[branch]+='%F{white}*%f'
+	fi
+	local -r stash_count=$(git rev-list --walk-reflogs --count refs/stash)
+	if ((stash_count > 0)); then
+		hook_com[branch]+='%F{white}≡%f'
 	fi
 }
 
 prompt_honai_precmd() {
+	unset cmd_timestamp
+
 	vcs_info
 
 	local prompt_infos=()
+
+	# dir
+	prompt_infos+=('%F{blue}%~%f')
 
 	# dot indicator
 	if [[ $PWD = "$HOME" && -n "$(dot status --short 2>/dev/null)" ]]; then
@@ -61,7 +75,7 @@ prompt_honai_precmd() {
 
 	# vcs
 	if [[ -n ${vcs_info_msg_0_} ]]; then
-		prompt_infos+=("%F{8}${vcs_info_msg_0_}%f")
+		prompt_infos+=("%F{8}$vcs_info_msg_0_%f")
 	fi
 
 	# venv
@@ -75,7 +89,7 @@ prompt_honai_precmd() {
 		else
 			local venv_name="$last"
 		fi
-		prompt_infos+=("${icon_python}%F{8}${venv_name}%f")
+		prompt_infos+=("${icon_python} %F{8}${venv_name}%f")
 	fi
 
 	# k8s
@@ -85,7 +99,7 @@ prompt_honai_precmd() {
 	fi
 
 	PROMPT="
-${remote_info}%~ ${prompt_infos[*]} %(0?..[%?] )%F{8}%*%f
+${remote_info}${prompt_infos[*]} %(0?..[%?] )%F{8}%*%f
 %(0?.%F{blue}.%F{red})${prompt_char}%f "
 }
 
