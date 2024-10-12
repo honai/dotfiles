@@ -49,6 +49,7 @@ else
 fi
 alias ll="ls -lh"
 alias path="echo $PATH | tr : $'\n'"
+alias norprompt='prompt_honai_remove_rprompt'
 
 # INCLUDES
 setopt NULL_GLOB

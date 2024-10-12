@@ -28,6 +28,7 @@ prompt_honai_setup() {
 	icon_python='%F{blue}%f' # nf-dev-python
 	icon_yj='%F{9}%f'        # nf-dev-yahoo_small
 	prompt_char="❯"
+	prompt_honai_rprompt_sep_nbsp=' '
 
 	add-zsh-hook precmd prompt_honai_precmd
 }
@@ -99,8 +100,14 @@ prompt_honai_precmd() {
 	fi
 
 	PROMPT="
-${remote_info}${prompt_infos[*]} %(0?..[%?] )%F{8}%*%f
+${remote_info}${prompt_infos[*]}%(0?.. [%?])
 %(0?.%F{blue}.%F{red})${prompt_char}%f "
+
+	RPROMPT="$prompt_honai_rprompt_sep_nbsp%F{8}%*%f"
+}
+
+prompt_honai_remove_rprompt() {
+	sed -E "s/^(${prompt_char} .+[^[:space:]]) +${prompt_honai_rprompt_sep_nbsp}.+$/\1/g"
 }
 
 prompt_honai_setup "$@"
