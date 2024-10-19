@@ -1,5 +1,4 @@
 prompt_honai_setup() {
-	zmodload zsh/datetime
 	autoload -Uz vcs_info
 
 	zstyle ':vcs_info:*' enable git cvs
@@ -49,11 +48,11 @@ prompt_honai_setup() {
 
 +vi-vcs_git_dirty() {
 	export GIT_OPTIONAL_LOCKS=0
-	local -r status="$(git status --short 2>/dev/null)"
-	if [[ -n $status ]]; then
+	local -r git_status="$(git status --short 2>/dev/null)"
+	if [[ -n $git_status ]]; then
 		hook_com[branch]+='%F{white}*%f'
 	fi
-	local -r stash_count=$(git rev-list --walk-reflogs --count refs/stash)
+	local -r stash_count=$(git stash list | wc -l)
 	if ((stash_count > 0)); then
 		hook_com[branch]+='%F{white}≡%f'
 	fi
