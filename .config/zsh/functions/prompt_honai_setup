@@ -63,7 +63,7 @@ prompt_honai_precmd() {
 
 	vcs_info
 
-	local prompt_infos=()
+	prompt_infos=()
 
 	# dir
 	prompt_infos+=('%F{blue}%~%f')
