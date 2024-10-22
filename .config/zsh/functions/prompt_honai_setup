@@ -39,8 +39,10 @@ prompt_honai_setup() {
 	local -a ahead_and_behind=(
 		$(git rev-list --left-right --count HEAD...@'{u}' 2>/dev/null)
 	)
-	ahead=${ahead_and_behind[1]}
-	behind=${ahead_and_behind[2]}
+	local a_b="$(git rev-list --left-right --count HEAD...@'{u}' 2>/dev/null)"
+	a_b=(${(ps:\t:)a_b})
+	ahead=${a_b[1]}
+	behind=${a_b[2]}
 	((ahead > 0)) && arrows+="⇡"
 	((behind > 0)) && arrows+="⇣"
 	hook_com[branch]+="%F{white}$arrows%f"
