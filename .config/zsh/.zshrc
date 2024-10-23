@@ -37,10 +37,11 @@ compinit -d "$XDG_CACHE_HOME/zcompdump"
 compdef dot=git
 
 # ALIAS
+autoload -Uz j
+alias ,="j ,"
 alias rm="rm -i"
 alias cp="cp -i"
 alias mv="mv -i"
-# TODO: Linux / Mac?
 system_type="$(uname -s)"
 if [ "$system_type" = "Darwin" ]; then
 	alias ls="ls -G"

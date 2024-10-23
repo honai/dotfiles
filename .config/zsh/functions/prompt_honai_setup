@@ -22,9 +22,9 @@ prompt_honai_setup() {
 	# icons
 	icon_git=''        # nf-dev-git
 	icon_git_branch='' # nf-dev-git_branch
-	icon_k8s='󱃾 '       # nf-md-kubernetes
+	icon_k8s='%F{blue}󱃾%f '       # nf-md-kubernetes
 	#icon_k8s='⎈ '
-	icon_python='%F{blue}%f' # nf-dev-python
+	icon_python='%F{cyan}%f' # nf-dev-python
 	icon_yj='%F{9}%f'        # nf-dev-yahoo_small
 	prompt_char="❯"
 	prompt_honai_rprompt_sep_nbsp=' '
@@ -91,13 +91,15 @@ prompt_honai_precmd() {
 		else
 			local venv_name="$last"
 		fi
-		prompt_infos+=("${icon_python} %F{8}${venv_name}%f")
+		prompt_infos+=("${icon_python}%F{8}${venv_name}%f")
 	fi
 
 	# k8s
 	if [[ $is_kubectl_found = "1" ]]; then
-		local -r k8s_ctx="$(kubectl config current-context)"
-		prompt_infos+=("%F{8}${icon_k8s}${k8s_ctx}%f")
+		local -r k8s_ctx="$(kubectl config current-context 2>/dev/null)"
+		if [[ -n "$k8s_ctx" ]]; then
+			prompt_infos+=("${icon_k8s}%F{8}${k8s_ctx}%f")
+		fi
 	fi
 
 	PROMPT="
