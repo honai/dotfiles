@@ -1,3 +1,7 @@
+if filereadable(expand('$VIMRUNTIME/defaults.vim'))
+  source $VIMRUNTIME/defaults.vim
+endif
+
 syntax on
 set number
 
