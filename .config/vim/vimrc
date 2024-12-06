@@ -6,8 +6,8 @@ syntax on
 set number
 
 " Visualize whitespaces
-" \u21e5\u00a0\u00a0 (nbsp)
-set listchars=tab:⇥  ,trail:•,
+" recent version supports 3 chars for tab.
+set listchars=tab:⇥ ,trail:•,
 highlight SpecialKey ctermfg=gray
 highlight NonText ctermfg=gray
 set list
