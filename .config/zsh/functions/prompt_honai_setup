@@ -33,6 +33,7 @@ prompt_honai_setup() {
 }
 
 +vi-vcs_git_arrow() {
+	export GIT_OPTIONAL_LOCKS=0
 	local arrows ahead behind
 	# Exit early in case the worktree is on a detached HEAD
 	git rev-parse @'{u}' >/dev/null 2>&1 || return 0
@@ -43,6 +44,7 @@ prompt_honai_setup() {
 	((ahead > 0)) && arrows+="⇡"
 	((behind > 0)) && arrows+="⇣"
 	hook_com[branch]+="%F{white}$arrows%f"
+	unset GIT_OPTIONAL_LOCKS
 }
 
 +vi-vcs_git_dirty() {
@@ -51,15 +53,14 @@ prompt_honai_setup() {
 	if [[ -n $git_status ]]; then
 		hook_com[branch]+='%F{white}*%f'
 	fi
-	local -r stash_count=$(git stash list | wc -l)
-	if ((stash_count > 0)); then
+	local -r git_stash="$(git rev-list --count refs/stash 2>/dev/null)"
+	if ((git_stash > 0)); then
 		hook_com[branch]+='%F{white}≡%f'
 	fi
+	unset GIT_OPTIONAL_LOCKS
 }
 
 prompt_honai_precmd() {
-	unset cmd_timestamp
-
 	vcs_info
 
 	prompt_infos=()
