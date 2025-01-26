@@ -29,6 +29,13 @@ zle -N down-line-or-local-history
 bindkey '^P' up-line-or-local-history
 bindkey '^N' down-line-or-local-history
 
+# update time on enter command
+re-prompt() {
+	zle .reset-prompt
+	zle .accept-line
+}
+zle -N accept-line re-prompt
+
 # COMPLETION
 autoload -Uz compinit
 compinit -d "$XDG_CACHE_HOME/zcompdump"
