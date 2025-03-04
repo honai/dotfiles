@@ -26,7 +26,8 @@ prompt_honai_setup() {
 	#icon_k8s='⎈ '
 	icon_python='%F{cyan}%f' # nf-dev-python
 	icon_yj='%F{9}%f'        # nf-dev-yahoo_small
-	prompt_char="❯"
+	#prompt_char="❯"
+	prompt_char="%%"
 	prompt_honai_rprompt_sep_nbsp=' '
 
 	add-zsh-hook precmd prompt_honai_precmd
