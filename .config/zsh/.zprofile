@@ -5,6 +5,8 @@ path=(
 	$path
 )
 
+export LESS='--ignore-case --LONG-PROMPT --RAW-CONTROL-CHARS --chop-long-lines --HILITE-UNREAD -z-4'
+
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 
 # INCLUDES
