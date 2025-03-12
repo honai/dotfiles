@@ -9,6 +9,13 @@ export LESS='--quit-if-one-screen --ignore-case --LONG-PROMPT --RAW-CONTROL-CHAR
 
 export GEM_HOME="$XDG_DATA_HOME/gems"
 
+if [[ -n "$GEM_HOME/bin" ]]; then
+	path=(
+		"$GEM_HOME/bin"
+		$path
+	)
+fi
+
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 
 # INCLUDES
