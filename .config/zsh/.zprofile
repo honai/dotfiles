@@ -7,6 +7,8 @@ path=(
 
 export LESS='--quit-if-one-screen --ignore-case --LONG-PROMPT --RAW-CONTROL-CHARS --chop-long-lines --HILITE-UNREAD -z-4'
 
+export GEM_HOME="$XDG_DATA_HOME/gems"
+
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 
 # INCLUDES
