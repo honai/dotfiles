@@ -4,7 +4,7 @@ fpath=(
 )
 
 bindkey -e
-
+unsetopt FLOWCONTROL
 # HISTORY
 HISTFILE="$XDG_STATE_HOME/zsh_history"
 SAVEHIST=100000
@@ -24,6 +24,12 @@ down-line-or-local-history () {
 	zle down-line-or-history
 	zle set-local-history 0
 }
+select-history() {
+  BUFFER=$(history -n -r 1 | fzf --reverse --no-sort +m --query "$LBUFFER" --prompt="History > ")
+  CURSOR=$#BUFFER
+}
+zle -N select-history
+bindkey '^r' select-history
 zle -N up-line-or-local-history
 zle -N down-line-or-local-history
 bindkey '^P' up-line-or-local-history
