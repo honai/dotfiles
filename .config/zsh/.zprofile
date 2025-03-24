@@ -5,6 +5,7 @@ path=(
 	$path
 )
 
+export LESSHISTFILE="$XDG_STATE_HOME/less/history"
 export LESS='--quit-if-one-screen --ignore-case --LONG-PROMPT --RAW-CONTROL-CHARS --chop-long-lines --HILITE-UNREAD -z-4'
 
 export GEM_HOME="$XDG_DATA_HOME/gems"
