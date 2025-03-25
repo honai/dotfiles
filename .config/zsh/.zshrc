@@ -29,7 +29,9 @@ select-history() {
   CURSOR=$#BUFFER
 }
 zle -N select-history
-bindkey '^r' select-history
+if type fzf >/dev/null; then
+	bindkey '^r' select-history
+fi
 zle -N up-line-or-local-history
 zle -N down-line-or-local-history
 bindkey '^P' up-line-or-local-history
