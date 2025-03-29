@@ -17,6 +17,8 @@ prompt_honai_setup() {
 	remote_info=''
 	if [[ -n "$SSH_CONNECTION" ]]; then
 		remote_info='%M '
+	elif [[ -n "$WSL_DISTRO_NAME" ]]; then
+		remote_info="${WSL_DISTRO_NAME}.wsl "
 	fi
 
 	# icons
