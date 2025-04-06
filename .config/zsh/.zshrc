@@ -5,6 +5,7 @@ fpath=(
 
 bindkey -e
 unsetopt FLOWCONTROL
+
 # HISTORY
 HISTFILE="$XDG_STATE_HOME/zsh_history"
 SAVEHIST=100000
@@ -52,6 +53,7 @@ compinit -d "$XDG_CACHE_HOME/zcompdump"
 compdef dot=git
 
 # ALIAS
+setopt autocd
 autoload -Uz j
 alias ,="j ,"
 alias rm="rm -i"
@@ -64,6 +66,7 @@ else
 	alias ls="ls --color=auto"
 fi
 alias ll="ls -lh"
+alias l="less"
 alias path="echo $PATH | tr : $'\n'"
 alias norprompt='prompt_honai_remove_rprompt'
 
