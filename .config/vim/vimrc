@@ -1,3 +1,9 @@
+set directory=$XDG_CACHE_HOME/vim,~/,/tmp
+set backupdir=$XDG_CACHE_HOME/vim,~/,/tmp
+set viminfo+=n$XDG_CACHE_HOME/vim/viminfo
+
+set runtimepath=$XDG_CONFIG_HOME/vim,$XDG_CONFIG_HOME/vim/after,$VIM,$VIMRUNTIME
+
 if filereadable(expand('$VIMRUNTIME/defaults.vim'))
   source $VIMRUNTIME/defaults.vim
 endif
@@ -11,3 +17,10 @@ set listchars=tab:⇥ ,trail:•,
 highlight SpecialKey ctermfg=gray
 highlight NonText ctermfg=gray
 set list
+
+" === keymap
+let mapleader = " "
+" vim-oscyank
+nmap <leader>c <Plug>OSCYankOperator
+nmap <leader>cc <leader>c_
+vmap <leader>c <Plug>OSCYankVisual
