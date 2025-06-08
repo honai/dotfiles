@@ -38,6 +38,9 @@ zle -N down-line-or-local-history
 bindkey '^P' up-line-or-local-history
 bindkey '^N' down-line-or-local-history
 
+# move/delete per slash
+typeset -g WORDCHARS=${WORDCHARS:s@/@}
+
 # update time on enter command
 re-prompt() {
 	zle .reset-prompt
