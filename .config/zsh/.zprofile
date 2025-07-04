@@ -8,13 +8,22 @@ path=(
 export LESSHISTFILE="$XDG_STATE_HOME/less/history"
 export LESS='--quit-if-one-screen --ignore-case --LONG-PROMPT --RAW-CONTROL-CHARS --chop-long-lines --HILITE-UNREAD -z-4'
 
-export GEM_HOME="$XDG_DATA_HOME/gems"
-
-if [[ -n "$GEM_HOME/bin" ]]; then
+GEM_HOME="$XDG_DATA_HOME/gems"
+if [[ -d "$GEM_HOME/bin" ]]; then
 	path=(
 		"$GEM_HOME/bin"
 		$path
 	)
+	export GEM_HOME
+fi
+
+PNPM_HOME="$XDG_DATA_HOME/pnpm"
+if [[ -d "$PNPM_HOME" ]]; then
+	path=(
+		"$PNPM_HOME"
+		$path
+	)
+	export PNPM_HOME
 fi
 
 export VIRTUAL_ENV_DISABLE_PROMPT=1
