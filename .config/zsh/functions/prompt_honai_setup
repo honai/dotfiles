@@ -71,8 +71,8 @@ prompt_honai_precmd() {
 	# dir
 	prompt_infos+=('%F{blue}%~%f')
 
-	# dot indicator
-	if [[ $PWD = "$HOME" && -n "$(dot status --short 2>/dev/null)" ]]; then
+	# dotfiles diff indicator
+	if [[ $PWD = "$HOME" && -n "$(yadm status --short 2>/dev/null)" ]]; then
 		prompt_infos+=("%F{red}*%f")
 	fi
 
