@@ -67,6 +67,8 @@ if [ "$system_type" = "Darwin" ]; then
 	alias ls="ls -G"
 else
 	alias ls="ls --color=auto"
+	alias pbcopy="xsel -ib"
+	alias pbpaste="xsel -ob"
 fi
 alias ll="ls -lh"
 alias l="less"
