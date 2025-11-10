@@ -10,6 +10,9 @@ if filereadable(expand('$VIMRUNTIME/defaults.vim'))
   source $VIMRUNTIME/defaults.vim
 endif
 
+" not use octal
+set nrformats=
+
 syntax on
 set number
 
