@@ -1,20 +1,6 @@
-set directory=$XDG_CACHE_HOME/vim,~/,/tmp
-set backupdir=$XDG_CACHE_HOME/vim,~/,/tmp
-" The 'n' flag in the 'viminfo' option can be used to specify another viminfo file name 'viminfo'.
-" (refer to :h vim-info-file)
-set viminfo+=n$XDG_CACHE_HOME/vim/viminfo
-
-set runtimepath=$XDG_CONFIG_HOME/vim,$XDG_CONFIG_HOME/vim/after,$VIM,$VIMRUNTIME
-
-if filereadable(expand('$VIMRUNTIME/defaults.vim'))
-  source $VIMRUNTIME/defaults.vim
-endif
-
-" not use octal
-set nrformats=
-
-syntax on
 set number
+" don't use octal
+set nrformats=
 
 " Visualize whitespaces
 " recent version supports 3 chars for tab.
@@ -23,9 +9,10 @@ highlight SpecialKey ctermfg=gray
 highlight NonText ctermfg=gray
 set list
 
-" === keymap
-let mapleader = " "
-" vim-oscyank
-nmap <leader>c <Plug>OSCYankOperator
-nmap <leader>cc <leader>c_
-vmap <leader>c <Plug>OSCYankVisual
+nnoremap ; :
+nnoremap : ;
+vnoremap ; :
+vnoremap : ;
+
+" tclip
+command! -range=% Tclip <line1>,<line2>write !tclip
