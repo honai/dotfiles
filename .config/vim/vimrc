@@ -9,10 +9,5 @@ highlight SpecialKey ctermfg=gray
 highlight NonText ctermfg=gray
 set list
 
-nnoremap ; :
-nnoremap : ;
-vnoremap ; :
-vnoremap : ;
-
 " tclip
 command! -range=% Tclip <line1>,<line2>write !tclip
