@@ -58,6 +58,7 @@ compdef dot=git
 # ALIAS
 setopt autocd
 autoload -Uz j
+autoload -Uz g
 alias ,="j ,"
 alias rm="rm -i"
 alias cp="cp -i"
@@ -73,6 +74,8 @@ fi
 alias ll="ls -lh"
 alias l="less"
 alias path="echo $PATH | tr : $'\n'"
+alias kctx='kubectl config use-context'
+alias vimpb='tmpfile=$(mktemp); pbpaste > "$tmpfile"; vim "$tmpfile"; pbcopy < "$tmpfile"; /bin/rm "$tmpfile"'
 
 # INCLUDES
 setopt NULL_GLOB

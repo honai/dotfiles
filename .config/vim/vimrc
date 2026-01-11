@@ -1,6 +1,12 @@
+set nocompatible
+set showcmd
 set number
 " don't use octal
 set nrformats=
+
+" keys
+nnoremap oo o<Esc>k
+nnoremap OO O<Esc>j
 
 " Visualize whitespaces
 " recent version supports 3 chars for tab.
