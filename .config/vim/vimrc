@@ -3,10 +3,18 @@ set showcmd
 set number
 " don't use octal
 set nrformats=
+syntax on
+set incsearch
+set ignorecase
+set smartcase
+set hlsearch
+set wildmenu
+set wildmode=longest:full,full
+
+set helplang=ja,en
 
 " keys
-nnoremap oo o<Esc>k
-nnoremap OO O<Esc>j
+nnoremap <silent> <C-l> :<C-u>nohlsearch<CR><C-l>
 
 " Visualize whitespaces
 " recent version supports 3 chars for tab.
@@ -14,6 +22,12 @@ set listchars=tab:⇥ ,trail:•,
 highlight SpecialKey ctermfg=gray
 highlight NonText ctermfg=gray
 set list
+
+" netrw
+filetype plugin on
+let g:netrw_banner=0
+let g:netrw_liststyle=3 " Tree
+let g:netrw_list_hide='^\.git/$,^\.DS_Store$'
 
 " tclip
 command! -range=% Tclip <line1>,<line2>write !tclip
