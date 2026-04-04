@@ -11,6 +11,8 @@ set hlsearch
 set wildmenu
 set wildmode=longest:full,full
 
+colorscheme iceberg
+
 set helplang=ja,en
 
 " keys
