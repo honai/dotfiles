@@ -1,0 +1,3 @@
+source "${XDG_CONFIG_HOME:-$HOME/.config}/profile"
+
+[[ $- == *i* ]] && source "$HOME/.bashrc"

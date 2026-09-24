@@ -1,0 +1,21 @@
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_STATE_HOME="$HOME/.local/state"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_CACHE_HOME="$HOME/.cache"
+
+export PATH="$HOME/.local/bin:$PATH"
+
+export GEM_HOME="$XDG_DATA_HOME/gems"
+export PNPM_HOME="$XDG_DATA_HOME/pnpm"
+export DOTNET_CLI_HOME="$XDG_DATA_HOME/dotnet"
+
+export EDITOR=vim
+export VISUAL=vim
+export PAGER=less
+
+for profile in $XDG_CONFIG_HOME/profile.*; do
+	test -r "$profile" && . "$profile"
+done
+unset profile
+
+exec fish
