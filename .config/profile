@@ -13,7 +13,7 @@ export EDITOR=vim
 export VISUAL=vim
 export PAGER=less
 
-for profile in $XDG_CONFIG_HOME/profile.*; do
+for profile in $XDG_CONFIG_HOME/profile.d/*.sh; do
 	test -r "$profile" && . "$profile"
 done
 unset profile
