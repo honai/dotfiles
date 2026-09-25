@@ -3,11 +3,18 @@ export XDG_STATE_HOME="$HOME/.local/state"
 export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_CACHE_HOME="$HOME/.cache"
 
-export PATH="$HOME/.local/bin:$PATH"
-
 export GEM_HOME="$XDG_DATA_HOME/gems"
+[[ -d "$GEM_HOME/bin" ]] && export PATH="$GEM_HOME/bin:$PATH"
+
 export PNPM_HOME="$XDG_DATA_HOME/pnpm"
-export DOTNET_CLI_HOME="$XDG_DATA_HOME/dotnet"
+[[ -d "$PNPM_HOME/bin" ]] && export PATH="$PNPM_HOME/bin:$PATH"
+
+export GOPATH="$XDG_DATA_HOME/go"
+[[ -d "$GOPATH/bin" ]] && export PATH="$GOPATH/bin:$PATH"
+
+[[ -d "/opt/homebrew/bin" ]] && export PATH="/opt/homebrew/bin:$PATH"
+
+export PATH="$HOME/.local/bin:$PATH"
 
 export EDITOR=vim
 export VISUAL=vim
@@ -18,4 +25,8 @@ for profile in $XDG_CONFIG_HOME/profile.d/*.sh; do
 done
 unset profile
 
-exec fish
+if command -v fish >/dev/null 2>&1; then
+	exec fish
+else
+	echo "fish: command not found" >&2
+fi
